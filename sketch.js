@@ -1,14 +1,20 @@
 let tileSize = 35
 let map1 = [
-  [0,0,0,0,0,0],
-  [0,0,0,0,0,0],
-  [0,0,0,0,0,0],
-  [0,0,0,0,0,0],
-  [0,0,0,0,0,0]
+  [1,0,0,0,0,1],
+  [1,0,0,0,0,1],
+  [1,0,0,0,0,1],
+  [1,0,0,0,0,1],
+  [1,0,0,0,0,1]
+]
+let map2 = [
+  [0,2,0,0,0,2],
+  [0,2,0,0,0,2],
+  [0,2,0,0,0,2],
+  [0,2,0,0,0,2],
+  [0,2,0,0,0,2]
 ]
 let cubeTesting;
-let randomColor = []
-map1.map((array) => array.map((e,i) => array[i] = Math.round(Math.random()*100)/100))
+//map1.map((array) => array.map((e,i) => array[i] = Math.round(Math.random()*100)/100))
 
 function setup() {
   cubeTesting = new cubeRender(map1)
@@ -17,12 +23,10 @@ function setup() {
 
 function draw() {
 
-  background(220);
+  background(220);  
 
-  
-  //map1[1][1] += .001
-
-  cubeTesting.drawMap(10,100)
+  cubeTesting.drawMap(10,100,map1)
+  cubeTesting.drawMap(10,100,map2)
   
 }
 
@@ -30,7 +34,7 @@ class cubeRender {
 
   constructor (map) {
 
-    this.currMap = map.slice()
+    this.currMap = this.arrayRotate(map)
     this.xTile = tileSize * 0.866025   
 
     this.xPlayer
@@ -77,11 +81,13 @@ class cubeRender {
 
   }
 
-  drawMap (xInput,yInput) {
+  drawMap (xInput,yInput,map) {
 
-    let _x = xInput + (this.xTile*(this.currMap.length-1))
+    let mapNew = this.arrayRotate(map)
 
-    this.currMap.forEach((e,i) => {
+    let _x = xInput + (this.xTile*(mapNew.length-1))
+
+    mapNew.forEach((e,i) => {
       this.drawRow(e,_x-(this.xTile*i),yInput+(tileSize/2)*i)
     })
     
@@ -90,10 +96,27 @@ class cubeRender {
   drawRow (mapArray,xInput,yInput) {
     
     mapArray.forEach((e,i) => {
-
+      if (e != 0)
       this.cubeMaker(xInput+this.xTile*i,yInput+(tileSize/2)*i-(tileSize*e))
 
     })  
 
    }
+
+   //rotates arrays 90º anti-clock wise
+   arrayRotate (array) {
+    
+    let newArray = []
+    let arraySize = array[0].length
+
+    for (let i = arraySize; i > 0; i--){
+      
+      newArray.push([])        
+      array.map(e => newArray[arraySize-(i)].push(e[i-1]))     
+
+    }
+
+    return newArray
+}
+
 }
